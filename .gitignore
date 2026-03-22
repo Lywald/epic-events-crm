@@ -1,0 +1,48 @@
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environment ───────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Sensitive / secrets ───────────────────────────────────
+.env
+.env.*
+!.env.example
+*.secret
+secrets.py
+secrets.json
+config.local.py
+
+# ── Database files ────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+epiceventsDB
+
+# ── Plaintext credentials (ne jamais commiter) ────────────
+pass.txt
+*.txt
+
+# ── Sentry / logs ─────────────────────────────────────────
+*.log
+logs/
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
