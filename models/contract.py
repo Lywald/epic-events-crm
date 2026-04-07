@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-
+# Business Model
 class Contract:
     """Contrats conçus par Epic Events"""
     def __init__(self, id: int, informations_client: str,
@@ -30,3 +30,6 @@ class Contract:
             "creation_date": self.creation_date,
             "signed": self.signed
         }
+    
+
+# SQLAchemy Entity

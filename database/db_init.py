@@ -23,7 +23,8 @@ def create_user(session, name, email, password, role='admin'):
     session.commit()
     print(f"✅ User '{name}' ({role}) created successfully with email: {email}")
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
+def db_create_admin():
     db_path = "epiceventsDB.db"
     engine = create_engine(f"sqlite:///{db_path}", echo=False)
     
