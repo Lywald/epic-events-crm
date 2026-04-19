@@ -1,31 +1,38 @@
-from datetime import date, datetime
+from datetime import datetime, date
 
+from sqlalchemy import Column, Integer, Float, Boolean, DateTime, ForeignKey, String, func
+from sqlalchemy.orm import relationship
+from typing import Optional
+from .base import Base
 
-class Client:
+class ClientDB(Base):
+    __tablename__ = "clients"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    full_name = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    phone = Column(String, nullable=True)
+    company_name = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)    
+    updated_at = Column(DateTime, server_default=func.now(), nullable=False)    
+    commercial_id = Column(Integer, nullable=True)
+
     """Clients de Epic Events"""
     def __init__(self, full_name: str, email: str, 
-                 telephone: str, enterprise: str,
-                 creation_date: date, last_contact: date,
-                 commercial_name: str):
+                 phone: str, company_name: str,
+                 created_at: date, updated_at: date,
+                 commercial_id: Integer):
         self.full_name = full_name
         self.email = email
-        self.telephone = telephone
-        self.enterprise = enterprise
-        if isinstance(creation_date, str):
-            self.creation_date = datetime.strptime(creation_date, "%Y-%m-%d").date()
+        self.phone = phone
+        self.company_name = company_name
+        if isinstance(created_at, str):
+            self.created_at = datetime.strptime(created_at, "%Y-%m-%d").date()
         else:
-            self.creation_date = creation_date
-        self.last_contact = last_contact
-        self.commercial_name = commercial_name
+            self.created_at = created_at
+        if isinstance(updated_at, str):
+            self.updated_at = datetime.strptime(updated_at, "%Y-%m-%d").date()
+        else:
+            self.updated_at = updated_at
+        self.commercial_id = commercial_id
 
-    def to_dict(self):
-        """Convert client info to a dictionary."""
-        return {
-            "full_name": self.full_name,
-            "email": self.email,
-            "telephone": self.telephone,
-            "enteprise": self.enterprise,
-            "creation_date": self.creation_date.isoformat(),
-            "last_contact": self.last_contact.isoformat(),
-            "commercial_name": self.commercial_name,
-        }
+    

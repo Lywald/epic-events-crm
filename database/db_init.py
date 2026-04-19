@@ -2,6 +2,10 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
 import bcrypt
 import sys
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 Base = declarative_base()
 
@@ -36,12 +40,22 @@ def db_create_admin():
     session = Session()
     
     try:
-        # Create first admin user (change these values as needed)
+        # Load admin credentials from .env (set once and done)
+        admin_email = os.getenv("ADMIN_EMAIL", "admin@epicevents.com")
+        admin_password = os.getenv("ADMIN_PASSWORD")
+        if not admin_password:
+            print("❌ Error: ADMIN_PASSWORD must be set in .env file")
+            sys.exit(1)
+        
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(admin_password.encode('utf-8'), salt).decode('utf-8')
+
+        # Create first admin user using env vars
         create_user(
             session=session,
             name="Admin",
-            email="admin@epicevents.com",
-            password="admin123",
+            email=admin_email,
+            password=hashed,
             role="admin"
         )
         

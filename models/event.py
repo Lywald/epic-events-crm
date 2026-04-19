@@ -1,7 +1,12 @@
-from datetime import date, datetime
+from datetime import datetime, date
+
+from sqlalchemy import Column, Integer, Float, Boolean, DateTime, ForeignKey, String, func
+from sqlalchemy.orm import relationship
+from typing import Optional
+from .base import Base
 
 
-class Event:
+class EventDB(Base):
     """Evenements organisés par Epic Events"""
     def __init__(self, id: int, contract_id: int, 
                  client_name: str, client_contact: str,
@@ -25,16 +30,4 @@ class Event:
         self.attendees = attendees
         self.notes = notes
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "contract_id": self.contract_id,
-            "client_name": self.client_name,
-            "client_contact": self.client_contact,
-            "event_date_start": self.event_date_start,
-            "event_date_end": self.event_date_end,
-            "support_contact": self.support_contact,
-            "location": self.location,
-            "attendees": self.attendees,
-            "notes": self.notes,
-        }
+    
