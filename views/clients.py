@@ -4,9 +4,11 @@ from models.contract import ContractDB
 from models.client import ClientDB
 from controllers.ManagingContract import ManagingContract
 from controllers.ManagingClient import ManagingClient
+from controllers.ManagingUser import ManagingUser
 
 app = typer.Typer()
 client_manager = ManagingClient()
+user_manager = ManagingUser()
 
 @app.command("list")
 def list_clients():
@@ -17,6 +19,14 @@ def list_clients():
 @app.command("create")
 def create_client():
     #python main.py contract create
+    loggedUser = user_manager.LoginUser(None, None)
+    if loggedUser is None:
+        print("Authentification incorrecte.")
+        return None
+    if loggedUser.role.lower()!="commercial":
+        print("Seuls les commerciaux peuvent rajouter des clients.")
+        return None
+
     print("### Creating client")
 
     print("# Client full name: ")
@@ -34,5 +44,5 @@ def create_client():
                         func.now(), func.now(), 1)
 
     created = client_manager.CreateClient(client_item=myClient)
-    
+
     print("Created: " + str(created))

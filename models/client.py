@@ -14,7 +14,7 @@ class ClientDB(Base):
     company_name = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)    
     updated_at = Column(DateTime, server_default=func.now(), nullable=False)    
-    commercial_id = Column(Integer, nullable=True)
+    commercial_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     """Clients de Epic Events"""
     def __init__(self, full_name: str, email: str, 

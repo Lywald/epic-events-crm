@@ -1,5 +1,10 @@
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models.base import Base
+from models.user import UserDB
+from models.contract import ContractDB
+from models.event import EventDB
+from models.client import ClientDB
 import bcrypt
 import sys
 import os
@@ -7,22 +12,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-Base = declarative_base()
-
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    password = Column(String(255), nullable=False)
-    role = Column(String(50), default='user')
-
 def create_user(session, name, email, password, role='admin'):
     """Create a new user with hashed password."""
     # bcrypt.hashpw returns bytes, we store as string
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
-    user = User(name=name, email=email, password=hashed, role=role)
+    user = UserDB(name=name, email=email, password=hashed, role=role)
     session.add(user)
     session.commit()
     print(f"✅ User '{name}' ({role}) created successfully with email: {email}")
@@ -47,15 +42,13 @@ def db_create_admin():
             print("❌ Error: ADMIN_PASSWORD must be set in .env file")
             sys.exit(1)
         
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(admin_password.encode('utf-8'), salt).decode('utf-8')
-
         # Create first admin user using env vars
+        # create_user() handles hashing internally
         create_user(
             session=session,
             name="Admin",
             email=admin_email,
-            password=hashed,
+            password=admin_password,
             role="admin"
         )
         
