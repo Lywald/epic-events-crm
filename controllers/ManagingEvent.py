@@ -16,8 +16,14 @@ class ManagingEvent:
         self.db = Database()
 
     def ListEvents(self):
-        admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        engine = self.db.LoginDatabase(email="admin@epicevents.com", password=admin_password)
+        #admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+        engine = self.db.LoginDatabase()#email="admin@epicevents.com", password=admin_password)
+        
+        loggedUser = self.LoginUser()
+        if loggedUser is None:
+            print("Authentification requise.")
+            return
+        
         with Session(engine) as session:
             stmt = select(EventDB)
             for event in session.scalars(stmt):
@@ -27,10 +33,10 @@ class ManagingEvent:
     def CreateEvent(self, event_item: EventDB):
         # Use admin password from .env for DB operations (dummy for SQLite)
         user_manager = ManagingUser()
-        user_manager.LoginUser(None, None) # Trigger input() form
+        user_manager.LoginUser() # Trigger input() form
         
-        admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        engine = self.db.LoginDatabase(email="admin@epicevents.com", password=admin_password)
+        #admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+        engine = self.db.LoginDatabase()#email="admin@epicevents.com", password=admin_password)
         with Session(engine) as session:
             session.add(event_item)
             session.commit()

@@ -12,10 +12,10 @@ class Database:
         self.loggedin = False
         return
     
-    def LoginDatabase(self, email: str, password: str):
+    def LoginDatabase(self): #, email: str, password: str):
         self.loggedin = True
         if self.engine is None:
-            self.engine = create_engine("sqlite:///epiceventsDB.db", echo=True)
+            self.engine = create_engine("sqlite:///epiceventsDB.db", echo=False)
 
         return self.engine
     

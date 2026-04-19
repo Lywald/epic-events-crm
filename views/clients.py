@@ -19,7 +19,7 @@ def list_clients():
 @app.command("create")
 def create_client():
     #python main.py contract create
-    loggedUser = user_manager.LoginUser(None, None)
+    loggedUser = user_manager.LoginUser()
     if loggedUser is None:
         print("Authentification incorrecte.")
         return None

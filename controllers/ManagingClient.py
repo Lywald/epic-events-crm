@@ -15,8 +15,14 @@ class ManagingClient:
         self.db = Database()
 
     def ListContracts(self):
-        admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        engine = self.db.LoginDatabase(email="admin@epicevents.com", password=admin_password)
+        # admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+        engine = self.db.LoginDatabase() #email="admin@epicevents.com", password=admin_password)
+        
+        loggedUser = self.LoginUser()
+        if loggedUser is None:
+            print("Authentification requise.")
+            return
+        
         with Session(engine) as session:
             stmt = select(ClientDB)
             for client in session.scalars(stmt):
@@ -25,8 +31,8 @@ class ManagingClient:
     """Functions to create user with a password"""
     def CreateClient(self, client_item: ClientDB):
         # Use admin password from .env for DB operations (dummy for SQLite)
-        admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        engine = self.db.LoginDatabase(email="admin@epicevents.com", password=admin_password)
+        # admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+        engine = self.db.LoginDatabase() #email="admin@epicevents.com", password=admin_password)
         
         with Session(engine) as session:
             session.add(client_item)

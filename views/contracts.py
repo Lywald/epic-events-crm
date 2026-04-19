@@ -18,7 +18,7 @@ def list_contracts():
 def create_contract():
     #python main.py contract create
     
-    loggedUser = user_manager.LoginUser(None, None)
+    loggedUser = user_manager.LoginUser()
     if loggedUser is None:
         print("Auhentification échouée.")
         return None

@@ -20,7 +20,7 @@ def list_events():
 def create_event():
     #python main.py events create
     
-    loggedUser = user_manager.LoginUser(None, None)
+    loggedUser = user_manager.LoginUser()
     if loggedUser is None:
         print("Auhentification échouée.")
         return None
