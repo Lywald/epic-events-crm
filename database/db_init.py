@@ -49,7 +49,7 @@ def db_create_admin():
             name="Admin",
             email=admin_email,
             password=admin_password,
-            role="admin"
+            role="Gestion"
         )
         
         # You can add more users here

@@ -24,6 +24,7 @@ def create_contract():
         return None
     if loggedUser.role!="gestion" and loggedUser.role!="Gestion":
         print("Seul le département gestion peut créer un contrat.")
+        return None
 
     print("### Creating contract")
     print("# Client id: ")

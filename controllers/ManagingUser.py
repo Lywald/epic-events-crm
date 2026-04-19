@@ -22,7 +22,7 @@ class ManagingUser:
         # Use admin password from .env for DB operations (dummy for SQLite)
         admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
         loggedUser = self.LoginUser(None, None)
-        if loggedUser is None or loggedUser.role.lower()!="Gestion":
+        if loggedUser is None or loggedUser.role.lower()!="gestion":
             print("Authentification échouée.")
             return None
         engine = self.db.LoginDatabase(email="admin@epicevents.com", password=admin_password)
@@ -45,7 +45,7 @@ class ManagingUser:
         # Use admin password from .env for DB operations (dummy for SQLite)
         admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
         loggedUser = self.LoginUser(None, None)
-        if loggedUser is None or loggedUser.role.lower()!="Gestion":
+        if loggedUser is None or loggedUser.role.lower()!="gestion":
             print("Authentification échouée.")
             return None
         engine = self.db.LoginDatabase(email="admin@epicevents.com", password=admin_password)
