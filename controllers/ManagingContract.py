@@ -17,10 +17,10 @@ class ManagingContract:
         self.db = Database()
         self.user_manager = ManagingUser()
 
-    def ListContracts(self):
+    def ListContracts(self, filter_mode: str = ""):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.user_manager.LoginCheck() #LogFromJWT()
+        loggedUser = self.user_manager.LoginCheck()  # LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
@@ -28,12 +28,40 @@ class ManagingContract:
         with Session(engine) as session:
             stmt = select(ContractDB)
             for contract in session.scalars(stmt):
-                print(str(contract.total_amount) + " / " + str(contract.id))
+                if filter_mode == "unpaid":
+                    if contract.remaining_amount > 0:
+                        print(
+                            str(contract.total_amount)
+                            + " / "
+                            + str(contract.id)
+                            + "  / signed"
+                            if contract.is_signed
+                            else "  / unsigned"
+                        )
+                elif filter_mode == "unsigned":
+                    if contract.is_signed == False:
+                        print(
+                            str(contract.total_amount)
+                            + " / "
+                            + str(contract.id)
+                            + "  / signed"
+                            if contract.is_signed
+                            else "  / unsigned"
+                        )
+                else:
+                    print(
+                        str(contract.total_amount)
+                        + " / "
+                        + str(contract.id)
+                        + "  / signed"
+                        if contract.is_signed
+                        else "  / unsigned"
+                    )
 
     """Functions to create user with a password"""
 
     def CreateContract(self, contract_item: ContractDB):
-        loggedUser = self.user_manager.LoginCheck() #LogFromJWT()
+        loggedUser = self.user_manager.LoginCheck()  # LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
@@ -51,10 +79,10 @@ class ManagingContract:
             print("Connection échouée.")
             return None
 
-        loggedUser = self.user_manager.LoginCheck() # self.LogFromJWT()
+        loggedUser = self.user_manager.LoginCheck()  # self.LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
-            return 
+            return
 
         with Session(engine) as session:
             ctr = session.get(ContractDB, contract_id)

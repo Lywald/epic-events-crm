@@ -26,11 +26,11 @@ class ManagingUser:
             print("Connection échouée.")
             return None
 
-        loggedUser = self.LoginCheck() # self.LogFromJWT()
+        loggedUser = self.LoginCheck()  # self.LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-       
+
         if loggedUser.role.lower() != "gestion":
             print("Authentification échouée: seul Gestion peut créer un utilisateur.")
             return None
@@ -47,10 +47,10 @@ class ManagingUser:
             print("Connection échouée.")
             return None
 
-        loggedUser = self.LoginCheck() # self.LogFromJWT()
+        loggedUser = self.LoginCheck()  # self.LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
-            return 
+            return
 
         with Session(engine) as session:
             usr = session.get(UserDB, user_id)
@@ -93,12 +93,15 @@ class ManagingUser:
                 payload = {
                     "user_id": user.id,
                     "email": user.email,
-                    "role": getattr(user, 'role', 'user'),  # UserDB may need role column
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)
+                    "role": getattr(
+                        user, "role", "user"
+                    ),  # UserDB may need role column
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8),
                 }
                 token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
                 with open("jwt.json", "w") as f:
                     import json
+
                     json.dump({"token": token}, f, indent=2)
                 return user
             else:
@@ -108,11 +111,11 @@ class ManagingUser:
     def ListUsers(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.LoginCheck() #LogFromJWT()
+        loggedUser = self.LoginCheck()  # LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
-            return 
-        
+            return
+
         with Session(engine) as session:
             stmt = select(UserDB)
             for usr in session.scalars(stmt):
@@ -123,7 +126,7 @@ class ManagingUser:
         if not jwt_key:
             print("Clef JWT manquante pour authentifier.")
             return None
-        
+
         try:
             with open("jwt.json", "r") as f:
                 data = json.load(f)
@@ -151,7 +154,7 @@ class ManagingUser:
         except:
             print("Erreur a la connexion JWT")
             return None
-        
+
     def LoginCheck(self):
         loggedUser = self.LogFromJWT()
         if loggedUser is None:
@@ -162,3 +165,11 @@ class ManagingUser:
         else:
             print(f"(Auto Logged in to {loggedUser.email} as {loggedUser.role})")
         return loggedUser
+
+    def Unlog(self):
+        path = "jwt.json"
+        if os.path.exists(path):
+            os.remove(path)
+            print("Déconnecté.")
+        else:
+            print("Pas d'utilisateur connecté")

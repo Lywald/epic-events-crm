@@ -69,3 +69,8 @@ def list_users():
 def login_user():
     print("# LOGIN EpicEvents #")
     user_manager.LoginUser()
+
+@app.command("logout")
+def login_user():
+    print("# Disconnecting...")
+    user_manager.Unlog()

@@ -21,11 +21,11 @@ def list_clients():
 @app.command("create")
 def create_client():
     # python main.py contract create
-    loggedUser = user_manager.LoginCheck()# user_manager.LoginUser()
+    loggedUser = user_manager.LoginCheck()  # user_manager.LoginUser()
     if loggedUser is None:
         print("Erreur a l'authentification.")
         return None
-    
+
     if loggedUser.role.lower() != "commercial":
         print("Seuls les commerciaux peuvent rajouter des clients.")
         return None

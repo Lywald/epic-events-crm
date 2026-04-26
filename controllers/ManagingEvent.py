@@ -21,7 +21,7 @@ class ManagingEvent:
     def ListEvents(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.user_manager.LoginCheck() #.LogFromJWT()
+        loggedUser = self.user_manager.LoginCheck()  # .LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
@@ -34,11 +34,11 @@ class ManagingEvent:
     """Functions to create event"""
 
     def CreateEvent(self, event_item: EventDB):
-        loggedUser = self.user_manager.LoginCheck() #.LogFromJWT()
+        loggedUser = self.user_manager.LoginCheck()  # .LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        
+
         engine = self.db.LoginDatabase()
         with Session(engine) as session:
             session.add(event_item)
@@ -46,17 +46,16 @@ class ManagingEvent:
             return True
         return False
 
-
     def DeleteEvent(self, event_id: int):
         engine = self.db.LoginDatabase()
         if engine is None:
             print("Connection échouée.")
             return None
 
-        loggedUser = self.user_manager.LoginCheck() 
+        loggedUser = self.user_manager.LoginCheck()
         if loggedUser is None:
             print("Authentification échouée.")
-            return 
+            return
 
         with Session(engine) as session:
             evt = session.get(EventDB, event_id)
@@ -65,35 +64,34 @@ class ManagingEvent:
             return True
         return False
 
-
     def AddSupport(self, user_id: int, event_id: int):
         engine = self.db.LoginDatabase()
         if engine is None:
             print("Connection échouée.")
             return False
 
-        loggedUser = self.user_manager.LoginCheck() 
+        loggedUser = self.user_manager.LoginCheck()
         if loggedUser is None:
             print("Authentification échouée.")
             return False
-        
+
         if loggedUser.role.lower() != "gestion":
             print("Seul un membre de gestion peut assigner un support à l'évènement.")
             return False
-        
+
         with Session(engine) as session:
             evt = session.get(EventDB, event_id)
-            
+
             if evt is None:
                 return False
-            
+
             support_user = session.get(UserDB, user_id)
             if support_user is None:
                 return False
-            
+
             if support_user.role.lower() != "support":
                 return False
-            
+
             evt.support_contact_id = support_user.id
             session.commit()
             return True

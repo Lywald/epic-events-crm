@@ -10,17 +10,17 @@ user_manager = ManagingUser()
 
 
 @app.command("list")
-def list_contracts():
+def list_contracts(filter_mode: str = ""):
     # python main.py contracts list
     print("### Listing contracts")
-    contract_manager.ListContracts()
+    contract_manager.ListContracts(filter_mode=filter_mode)
 
 
 @app.command("create")
 def create_contract():
     # python main.py contract create
 
-    loggedUser = user_manager.LoginCheck() # user_manager.LoginUser()
+    loggedUser = user_manager.LoginCheck()  # user_manager.LoginUser()
     if loggedUser is None:
         print("Auhentification échouée.")
         return None
