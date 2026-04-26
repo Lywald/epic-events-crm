@@ -21,9 +21,9 @@ def create_contract():
     # python main.py contract create
 
     loggedUser = user_manager.LoginCheck() # user_manager.LoginUser()
-    # if loggedUser is None:
-    #     print("Auhentification échouée.")
-    #     return None
+    if loggedUser is None:
+        print("Auhentification échouée.")
+        return None
     if loggedUser.role != "gestion" and loggedUser.role != "Gestion":
         print("Seul le département gestion peut créer un contrat.")
         return None
@@ -57,3 +57,15 @@ def create_contract():
 
     created = contract_manager.CreateContract(contract_item=myContract)
     print("Created: " + str(created))
+
+
+@app.command("delete")
+def delete_contract():
+    print("### Deleting contract")
+    print("# Contract ID: ")
+    contract_id = None
+    while contract_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        contract_id = tmp_id
+    contract_manager.DeleteContract(contract_id=contract_id)

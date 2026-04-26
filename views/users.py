@@ -34,9 +34,7 @@ def create_user():
     myUser = UserDB(
         None, name=user_name, email=user_email, role=user_role, password=hashedPW
     )
-    # userToCreate = UserDB#.loadUserDB(myUser)
 
-    # userToCreate = UserDB(user_name, employee_number)
     created = user_manager.CreateUser(user_item=myUser)
     print("Created: " + str(created))
 

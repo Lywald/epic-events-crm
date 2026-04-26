@@ -64,8 +64,38 @@ def create_event():
         event_notes,
     )
 
-    # myContract = ContractDB(None, contract_client_id, contract_commercial_id, contract_total_amount, contract_remaining_amount, func.now(), contract_is_signed)
-
-    # created = contract_manager.CreateContract(contract_item=myContract)
     created = event_manager.CreateEvent(event_item=myEvent)
     print("Created: " + str(created))
+
+
+@app.command("delete")
+def delete_event():
+    print("### Suppression d'évènement")
+    print("# Event ID: ")
+    event_id = None
+    while event_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        event_id = tmp_id
+    event_manager.DeleteEvent(event_id=event_id)
+
+
+@app.command("addsupport")
+def addsupport_event():
+    print("### Rajoute un collaborateur de support à l'évènement")
+
+    print("# Event ID: ")
+    event_id = None
+    while event_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        event_id = tmp_id
+
+    print("# Support User ID: ")
+    user_id = None
+    while user_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        user_id = tmp_id
+
+    event_manager.AddSupport(user_id=user_id, event_id=event_id)

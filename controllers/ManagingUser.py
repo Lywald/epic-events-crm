@@ -30,14 +30,7 @@ class ManagingUser:
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        # if loggedUser is None:
-        #     loggedUser = self.LoginUser()
-        # if loggedUser is None or loggedUser.role.lower() != "gestion":
-        #     print("Authentification échouée.")
-        #     return None
-        # else:
-        #     print(f"(Auto Logged in to {loggedUser.email} )")
-
+       
         if loggedUser.role.lower() != "gestion":
             print("Authentification échouée: seul Gestion peut créer un utilisateur.")
             return None
@@ -45,11 +38,6 @@ class ManagingUser:
         with Session(engine) as session:
             session.add(user_item)
             session.commit()
-            # key = "secret"
-            # encoded = jwt.encode({"loggedin": "false"}, key, algorithm="HS256")
-            # with open("jwt.json", "w") as f:
-            #     import json
-            #     json.dump({"token": encoded}, f)
             return True
         return False
 
@@ -59,18 +47,10 @@ class ManagingUser:
             print("Connection échouée.")
             return None
 
-        #loggedUser = self.LoginUser()
         loggedUser = self.LoginCheck() # self.LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return 
-        # if loggedUser is None:
-        #     loggedUser = self.LoginUser()
-        # if loggedUser is None or loggedUser.role.lower() != "gestion":
-        #     print("Authentification échouée.")
-        #     return None
-        # else:
-        #     print(f"(Auto Logged in to {loggedUser.email} )")
 
         with Session(engine) as session:
             usr = session.get(UserDB, user_id)
@@ -132,13 +112,7 @@ class ManagingUser:
         if loggedUser is None:
             print("Authentification échouée.")
             return 
-        # if loggedUser is None:
-        #     loggedUser = self.LoginUser()
-        # if loggedUser is None:
-        #     print("Authentification échouée.")
-        #     return
-        # else:
-        #     print(f"(Auto Logged in to {loggedUser.email} )")
+        
         with Session(engine) as session:
             stmt = select(UserDB)
             for usr in session.scalars(stmt):

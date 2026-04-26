@@ -22,10 +22,10 @@ def list_clients():
 def create_client():
     # python main.py contract create
     loggedUser = user_manager.LoginCheck()# user_manager.LoginUser()
-
-    # if loggedUser is None:
-    #     print("Authentification incorrecte.")
-    #     return None
+    if loggedUser is None:
+        print("Erreur a l'authentification.")
+        return None
+    
     if loggedUser.role.lower() != "commercial":
         print("Seuls les commerciaux peuvent rajouter des clients.")
         return None
@@ -56,3 +56,17 @@ def create_client():
     created = client_manager.CreateClient(client_item=myClient)
 
     print("Created: " + str(created))
+
+    return True
+
+
+@app.command("delete")
+def delete_client():
+    print("### Deleting client")
+    print("# Client ID: ")
+    client_id = None
+    while client_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        client_id = tmp_id
+    client_manager.DeleteClient(client_id=client_id)

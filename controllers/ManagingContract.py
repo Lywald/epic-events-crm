@@ -24,14 +24,6 @@ class ManagingContract:
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        # if loggedUser is None:
-        #     loggedUser = self.user_manager.LoginUser()
-        # if loggedUser is None:
-        #     print("Authentification échouée.")
-        #     return
-        # else:
-        #     print(f"(Auto Logged in to {loggedUser.email} )")
-        #loggedUser = self.user_manager.LoginUser()
 
         with Session(engine) as session:
             stmt = select(ContractDB)
@@ -41,28 +33,32 @@ class ManagingContract:
     """Functions to create user with a password"""
 
     def CreateContract(self, contract_item: ContractDB):
-        #user_manager = ManagingUser()
-        #self.user_manager.LoginUser()  # Trigger input() form
         loggedUser = self.user_manager.LoginCheck() #LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        # if loggedUser is None:
-        #     loggedUser = self.user_manager.LoginUser()
-        # if loggedUser is None:
-        #     print("Authentification échouée.")
-        #     return
-        # else:
-        #     print(f"(Auto Logged in to {loggedUser.email} )")
 
         engine = self.db.LoginDatabase()
         with Session(engine) as session:
             session.add(contract_item)
             session.commit()
-            # key = "secret"
-            # encoded = jwt.encode({"loggedin": "false"}, key, algorithm="HS256")
-            # with open("jwt.json", "w") as f:
-            #     import json
-            #     json.dump({"token": encoded}, f)
+            return True
+        return False
+
+    def DeleteContract(self, contract_id: int):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+
+        loggedUser = self.user_manager.LoginCheck() # self.LogFromJWT()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return 
+
+        with Session(engine) as session:
+            ctr = session.get(ContractDB, contract_id)
+            session.delete(ctr)
+            session.commit()
             return True
         return False

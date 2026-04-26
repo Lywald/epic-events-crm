@@ -24,26 +24,13 @@ class ManagingClient:
         if loggedUser is None:
             print("Authentification échouée.")
             return
-                        # self.user_manager.LogFromJWT()
-        # if loggedUser is None:
-        #     loggedUser = self.user_manager.LoginUser()
-        # if loggedUser is None:
-        #     print("Authentification échouée.")
-        #     return
-        # else:
-        #     print(f"(Auto Logged in to {loggedUser.email} )")
-        #loggedUser = self.user_manager.LoginUser()
-        #if loggedUser is None:
-        #    print("Authentification échouée.")
-        #    return
-
+    
         with Session(engine) as session:
             stmt = select(ClientDB)
             for client in session.scalars(stmt):
                 print(str(client.full_name) + " / " + str(client.email))
 
     """Functions to create user with a password"""
-
     def CreateClient(self, client_item: ClientDB):
         engine = self.db.LoginDatabase()
 
@@ -51,22 +38,33 @@ class ManagingClient:
         if loggedUser is None:
             print("Authentification échouée.")
             return False
-        # if loggedUser is None:
-        #     loggedUser = self.user_manager.LoginUser()
-        # if loggedUser is None:
-        #     print("Authentification échouée.")
-        #     return
-        # else:
-        #     print(f"(Auto Logged in to {loggedUser.email} )")
-        #loggedUser = self.user_manager.LoginUser()
+        
+        if loggedUser.role.lower() != "commercial":
+            print("Seul un commercial peut enregistrer un client.")
+            return False
         
         with Session(engine) as session:
+            client_item.commercial_id = loggedUser.id
             session.add(client_item)
             session.commit()
-            # key = "secret"
-            # encoded = jwt.encode({"loggedin": "false"}, key, algorithm="HS256")
-            # with open("jwt.json", "w") as f:
-            #     import json
-            #     json.dump({"token": encoded}, f)
+            return True
+        return False
+
+
+    def DeleteClient(self, client_id: int):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+
+        loggedUser = self.user_manager.LoginCheck() # self.LogFromJWT()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return 
+
+        with Session(engine) as session:
+            clt = session.get(ClientDB, client_id)
+            session.delete(clt)
+            session.commit()
             return True
         return False
