@@ -1,3 +1,4 @@
+from controllers.ManagingUser import ManagingUser
 from models.user import UserDB
 from models.contract import ContractDB
 from models.event import EventDB
@@ -15,11 +16,21 @@ class ManagingEvent:
 
     def __init__(self):
         self.db = Database()
+        self.user_manager = ManagingUser()
 
     def ListEvents(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.LoginUser()
+
+        #loggedUser = self.user_manager.LoginUser()
+        loggedUser = self.user_manager.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.user_manager.LoginUser()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
         if loggedUser is None:
             print("Authentification échouée.")
             return
@@ -32,8 +43,17 @@ class ManagingEvent:
     """Functions to create event"""
 
     def CreateEvent(self, event_item: EventDB):
-        user_manager = ManagingUser()
-        user_manager.LoginUser()  # Trigger input() form
+        #user_manager = ManagingUser()
+
+        loggedUser = self.user_manager.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.user_manager.LoginUser()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
+        #self.user_manager.LoginUser()  # Trigger input() form
 
         engine = self.db.LoginDatabase()
         with Session(engine) as session:

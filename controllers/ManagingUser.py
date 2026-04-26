@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 import os
 import jwt
+import json
 import datetime
 import bcrypt
 from dotenv import load_dotenv
@@ -25,10 +26,14 @@ class ManagingUser:
             print("Connection échouée.")
             return None
 
-        loggedUser = self.LoginUser()
+        loggedUser = self.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.LoginUser()
         if loggedUser is None or loggedUser.role.lower() != "gestion":
             print("Authentification échouée.")
             return None
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
 
         with Session(engine) as session:
             session.add(user_item)
@@ -47,10 +52,15 @@ class ManagingUser:
             print("Connection échouée.")
             return None
 
-        loggedUser = self.LoginUser()
+        #loggedUser = self.LoginUser()
+        loggedUser = self.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.LoginUser()
         if loggedUser is None or loggedUser.role.lower() != "gestion":
             print("Authentification échouée.")
             return None
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
 
         with Session(engine) as session:
             usr = session.get(UserDB, user_id)
@@ -87,21 +97,20 @@ class ManagingUser:
             ):
                 print("Correct password")
                 self.db.currentUser = user
+                JWT_SECRET = os.getenv("JWT_SECRET")
+                if not JWT_SECRET:
+                    raise ValueError("JWT_SEGMENT missing from .env")
+                payload = {
+                    "user_id": user.id,
+                    "email": user.email,
+                    "role": getattr(user, 'role', 'user'),  # UserDB may need role column
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)
+                }
+                token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+                with open("jwt.json", "w") as f:
+                    import json
+                    json.dump({"token": token}, f, indent=2)
                 return user
-                # JWT_SECRET = os.getenv("JWT_SECRET")
-                # if not JWT_SECRET:
-                #     raise ValueError("JWT_SEGMENT missing from .env")
-                # payload = {
-                #     "user_id": user.id,
-                #     "email": user.email,
-                #     "role": getattr(user, 'role', 'user'),  # UserDB may need role column
-                #     "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=8)
-                # }
-                # token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
-
-                # with open("jwt.json", "w") as f:
-                #     import json
-                #     json.dump({"token": token}, f, indent=2)
             else:
                 print("Incorrect password")
         return None
@@ -109,12 +118,49 @@ class ManagingUser:
     def ListUsers(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.LoginUser()
+        loggedUser = self.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.LoginUser()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
         with Session(engine) as session:
             stmt = select(UserDB)
             for usr in session.scalars(stmt):
                 print(f"{usr.name or 'N/A'} / {usr.id} / {usr.email}")
+
+    def LogFromJWT(self):
+        jwt_key = os.getenv("JWT_SECRET")
+        if not jwt_key:
+            print("Clef JWT manquante pour authentifier.")
+            return None
+        
+        try:
+            with open("jwt.json", "r") as f:
+                data = json.load(f)
+
+            token = data.get("token")
+            if not token:
+                print("Token manquant dans jwt.json")
+
+            payload = jwt.decode(token, jwt_key, algorithms=["HS256"])
+            user_id = payload.get("user_id")
+            if user_id is None:
+                print("Token manquant le user_id")
+
+            engine = self.db.LoginDatabase()
+            if engine is None:
+                return None
+            # Manage expirated tokens
+            with Session(engine) as session:
+                user = session.get(UserDB, int(user_id))
+                if user is None:
+                    print("User pas trouvé dans la base de données")
+                    return None
+                self.db.currentUser = user
+                return user
+        except:
+            print("Erreur a la connexion JWT")
+            return None

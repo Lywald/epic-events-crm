@@ -1,3 +1,4 @@
+from controllers.ManagingUser import ManagingUser
 from models.user import UserDB
 from models.contract import ContractDB
 from controllers.ManagingUser import ManagingUser
@@ -14,11 +15,20 @@ class ManagingContract:
 
     def __init__(self):
         self.db = Database()
+        self.user_manager = ManagingUser()
 
     def ListContracts(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.LoginUser()
+        loggedUser = self.user_manager.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.user_manager.LoginUser()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
+        #loggedUser = self.user_manager.LoginUser()
         if loggedUser is None:
             print("Authentification échouée.")
             return
@@ -31,9 +41,17 @@ class ManagingContract:
     """Functions to create user with a password"""
 
     def CreateContract(self, contract_item: ContractDB):
-        user_manager = ManagingUser()
-        user_manager.LoginUser()  # Trigger input() form
-
+        #user_manager = ManagingUser()
+        #self.user_manager.LoginUser()  # Trigger input() form
+        loggedUser = self.user_manager.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.user_manager.LoginUser()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
+            
         engine = self.db.LoginDatabase()
         with Session(engine) as session:
             session.add(contract_item)

@@ -15,7 +15,7 @@ user_manager = ManagingUser()
 def list_clients():
     # python main.py client list
     print("### Listing contracts")
-    client_manager.ListContracts()
+    client_manager.ListClients()
 
 
 @app.command("create")

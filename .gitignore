@@ -23,6 +23,7 @@ ENV/
 secrets.py
 secrets.json
 config.local.py
+jwt.json
 
 # ── Database files ────────────────────────────────────────
 *.db

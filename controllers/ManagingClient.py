@@ -1,3 +1,4 @@
+from controllers.ManagingUser import ManagingUser
 from models.user import UserDB
 from models.contract import ContractDB
 from models.client import ClientDB
@@ -14,11 +15,20 @@ class ManagingClient:
 
     def __init__(self):
         self.db = Database()
+        self.user_manager = ManagingUser()
 
-    def ListContracts(self):
+    def ListClients(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.LoginUser()
+        loggedUser = self.user_manager.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.user_manager.LoginUser()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
+        #loggedUser = self.user_manager.LoginUser()
         if loggedUser is None:
             print("Authentification échouée.")
             return
@@ -33,6 +43,19 @@ class ManagingClient:
     def CreateClient(self, client_item: ClientDB):
         engine = self.db.LoginDatabase()
 
+        loggedUser = self.user_manager.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.user_manager.LoginUser()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} )")
+        #loggedUser = self.user_manager.LoginUser()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return False
+        
         with Session(engine) as session:
             session.add(client_item)
             session.commit()

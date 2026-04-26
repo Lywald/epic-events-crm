@@ -69,4 +69,5 @@ def list_users():
 
 @app.command("login")
 def login_user():
-    print("SECRET KEY?")
+    print("# LOGIN EpicEvents #")
+    user_manager.LoginUser()
