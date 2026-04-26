@@ -26,14 +26,21 @@ class ManagingUser:
             print("Connection échouée.")
             return None
 
-        loggedUser = self.LogFromJWT()
+        loggedUser = self.LoginCheck() # self.LogFromJWT()
         if loggedUser is None:
-            loggedUser = self.LoginUser()
-        if loggedUser is None or loggedUser.role.lower() != "gestion":
             print("Authentification échouée.")
+            return
+        # if loggedUser is None:
+        #     loggedUser = self.LoginUser()
+        # if loggedUser is None or loggedUser.role.lower() != "gestion":
+        #     print("Authentification échouée.")
+        #     return None
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
+
+        if loggedUser.role.lower() != "gestion":
+            print("Authentification échouée: seul Gestion peut créer un utilisateur.")
             return None
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
 
         with Session(engine) as session:
             session.add(user_item)
@@ -53,14 +60,17 @@ class ManagingUser:
             return None
 
         #loggedUser = self.LoginUser()
-        loggedUser = self.LogFromJWT()
+        loggedUser = self.LoginCheck() # self.LogFromJWT()
         if loggedUser is None:
-            loggedUser = self.LoginUser()
-        if loggedUser is None or loggedUser.role.lower() != "gestion":
             print("Authentification échouée.")
-            return None
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
+            return 
+        # if loggedUser is None:
+        #     loggedUser = self.LoginUser()
+        # if loggedUser is None or loggedUser.role.lower() != "gestion":
+        #     print("Authentification échouée.")
+        #     return None
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
 
         with Session(engine) as session:
             usr = session.get(UserDB, user_id)
@@ -118,14 +128,17 @@ class ManagingUser:
     def ListUsers(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.LogFromJWT()
-        if loggedUser is None:
-            loggedUser = self.LoginUser()
+        loggedUser = self.LoginCheck() #LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
-            return
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
+            return 
+        # if loggedUser is None:
+        #     loggedUser = self.LoginUser()
+        # if loggedUser is None:
+        #     print("Authentification échouée.")
+        #     return
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
         with Session(engine) as session:
             stmt = select(UserDB)
             for usr in session.scalars(stmt):
@@ -164,3 +177,14 @@ class ManagingUser:
         except:
             print("Erreur a la connexion JWT")
             return None
+        
+    def LoginCheck(self):
+        loggedUser = self.LogFromJWT()
+        if loggedUser is None:
+            loggedUser = self.LoginUser()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return None
+        else:
+            print(f"(Auto Logged in to {loggedUser.email} as {loggedUser.role})")
+        return loggedUser

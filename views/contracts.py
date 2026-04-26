@@ -20,10 +20,10 @@ def list_contracts():
 def create_contract():
     # python main.py contract create
 
-    loggedUser = user_manager.LoginUser()
-    if loggedUser is None:
-        print("Auhentification échouée.")
-        return None
+    loggedUser = user_manager.LoginCheck() # user_manager.LoginUser()
+    # if loggedUser is None:
+    #     print("Auhentification échouée.")
+    #     return None
     if loggedUser.role != "gestion" and loggedUser.role != "Gestion":
         print("Seul le département gestion peut créer un contrat.")
         return None

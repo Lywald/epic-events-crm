@@ -22,12 +22,13 @@ def list_events():
 def create_event():
     # python main.py events create
 
-    loggedUser = user_manager.LoginUser()
+    loggedUser = user_manager.LoginCheck() # user_manager.LoginUser()
     if loggedUser is None:
         print("Auhentification échouée.")
         return None
     if loggedUser.role.lower() != "commercial":
         print("Seul le département commercial peut créer un évènement.")
+        return None
 
     print("### Création de l'évènement")
     print("# Nom de l'évènement : ")

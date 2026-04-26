@@ -20,18 +20,22 @@ class ManagingClient:
     def ListClients(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.user_manager.LogFromJWT()
-        if loggedUser is None:
-            loggedUser = self.user_manager.LoginUser()
+        loggedUser = self.user_manager.LoginCheck()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
+                        # self.user_manager.LogFromJWT()
+        # if loggedUser is None:
+        #     loggedUser = self.user_manager.LoginUser()
+        # if loggedUser is None:
+        #     print("Authentification échouée.")
+        #     return
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
         #loggedUser = self.user_manager.LoginUser()
-        if loggedUser is None:
-            print("Authentification échouée.")
-            return
+        #if loggedUser is None:
+        #    print("Authentification échouée.")
+        #    return
 
         with Session(engine) as session:
             stmt = select(ClientDB)
@@ -43,18 +47,18 @@ class ManagingClient:
     def CreateClient(self, client_item: ClientDB):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.user_manager.LogFromJWT()
-        if loggedUser is None:
-            loggedUser = self.user_manager.LoginUser()
-        if loggedUser is None:
-            print("Authentification échouée.")
-            return
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
-        #loggedUser = self.user_manager.LoginUser()
+        loggedUser = self.user_manager.LoginCheck()# self.user_manager.LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return False
+        # if loggedUser is None:
+        #     loggedUser = self.user_manager.LoginUser()
+        # if loggedUser is None:
+        #     print("Authentification échouée.")
+        #     return
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
+        #loggedUser = self.user_manager.LoginUser()
         
         with Session(engine) as session:
             session.add(client_item)

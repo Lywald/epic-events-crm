@@ -20,18 +20,18 @@ class ManagingContract:
     def ListContracts(self):
         engine = self.db.LoginDatabase()
 
-        loggedUser = self.user_manager.LogFromJWT()
-        if loggedUser is None:
-            loggedUser = self.user_manager.LoginUser()
+        loggedUser = self.user_manager.LoginCheck() #LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
+        # if loggedUser is None:
+        #     loggedUser = self.user_manager.LoginUser()
+        # if loggedUser is None:
+        #     print("Authentification échouée.")
+        #     return
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
         #loggedUser = self.user_manager.LoginUser()
-        if loggedUser is None:
-            print("Authentification échouée.")
-            return
 
         with Session(engine) as session:
             stmt = select(ContractDB)
@@ -43,15 +43,18 @@ class ManagingContract:
     def CreateContract(self, contract_item: ContractDB):
         #user_manager = ManagingUser()
         #self.user_manager.LoginUser()  # Trigger input() form
-        loggedUser = self.user_manager.LogFromJWT()
-        if loggedUser is None:
-            loggedUser = self.user_manager.LoginUser()
+        loggedUser = self.user_manager.LoginCheck() #LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
-            
+        # if loggedUser is None:
+        #     loggedUser = self.user_manager.LoginUser()
+        # if loggedUser is None:
+        #     print("Authentification échouée.")
+        #     return
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
+
         engine = self.db.LoginDatabase()
         with Session(engine) as session:
             session.add(contract_item)

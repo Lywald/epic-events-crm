@@ -23,17 +23,20 @@ class ManagingEvent:
 
 
         #loggedUser = self.user_manager.LoginUser()
-        loggedUser = self.user_manager.LogFromJWT()
-        if loggedUser is None:
-            loggedUser = self.user_manager.LoginUser()
+        loggedUser = self.user_manager.LoginCheck() #.LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
-        if loggedUser is None:
-            print("Authentification échouée.")
-            return
+        # if loggedUser is None:
+        #     loggedUser = self.user_manager.LoginUser()
+        # if loggedUser is None:
+        #     print("Authentification échouée.")
+        #     return
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
+        # if loggedUser is None:
+        #     print("Authentification échouée.")
+        #     return
 
         with Session(engine) as session:
             stmt = select(EventDB)
@@ -45,14 +48,18 @@ class ManagingEvent:
     def CreateEvent(self, event_item: EventDB):
         #user_manager = ManagingUser()
 
-        loggedUser = self.user_manager.LogFromJWT()
-        if loggedUser is None:
-            loggedUser = self.user_manager.LoginUser()
+        loggedUser = self.user_manager.LoginCheck() #.LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        else:
-            print(f"(Auto Logged in to {loggedUser.email} )")
+        
+        # if loggedUser is None:
+        #     loggedUser = self.user_manager.LoginUser()
+        # if loggedUser is None:
+        #     print("Authentification échouée.")
+        #     return
+        # else:
+        #     print(f"(Auto Logged in to {loggedUser.email} )")
         #self.user_manager.LoginUser()  # Trigger input() form
 
         engine = self.db.LoginDatabase()
