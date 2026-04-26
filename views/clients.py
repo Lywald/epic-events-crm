@@ -10,20 +10,22 @@ app = typer.Typer()
 client_manager = ManagingClient()
 user_manager = ManagingUser()
 
+
 @app.command("list")
 def list_clients():
-    #python main.py client list
+    # python main.py client list
     print("### Listing contracts")
     client_manager.ListContracts()
 
+
 @app.command("create")
 def create_client():
-    #python main.py contract create
+    # python main.py contract create
     loggedUser = user_manager.LoginUser()
     if loggedUser is None:
         print("Authentification incorrecte.")
         return None
-    if loggedUser.role.lower()!="commercial":
+    if loggedUser.role.lower() != "commercial":
         print("Seuls les commerciaux peuvent rajouter des clients.")
         return None
 
@@ -40,8 +42,15 @@ def create_client():
     print("# Commercial id: ")
     client_commercial_id = input()
 
-    myClient = ClientDB(client_full_name, client_email, client_phone, client_company_name,
-                        func.now(), func.now(), 1)
+    myClient = ClientDB(
+        client_full_name,
+        client_email,
+        client_phone,
+        client_company_name,
+        func.now(),
+        func.now(),
+        1,
+    )
 
     created = client_manager.CreateClient(client_item=myClient)
 

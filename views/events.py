@@ -10,21 +10,23 @@ contract_manager = ManagingContract()
 user_manager = ManagingUser()
 event_manager = ManagingEvent()
 
+
 @app.command("list")
 def list_events():
-    #python main.py contracts list
+    # python main.py contracts list
     print("### Listing events")
     event_manager.ListEvents()
 
+
 @app.command("create")
 def create_event():
-    #python main.py events create
-    
+    # python main.py events create
+
     loggedUser = user_manager.LoginUser()
     if loggedUser is None:
         print("Auhentification échouée.")
         return None
-    if loggedUser.role.lower()!="commercial" :
+    if loggedUser.role.lower() != "commercial":
         print("Seul le département commercial peut créer un évènement.")
 
     print("### Création de l'évènement")
@@ -47,11 +49,22 @@ def create_event():
     print("# Date fin (AAAA-MM-JJ) :")
     event_date_end = input()
 
-    myEvent = EventDB(None, event_name, event_contract_id, event_client_name, event_client_contact,
-                      event_date_start, event_date_end, None, event_location, event_attendees, event_notes)
-    
-    #myContract = ContractDB(None, contract_client_id, contract_commercial_id, contract_total_amount, contract_remaining_amount, func.now(), contract_is_signed)
+    myEvent = EventDB(
+        None,
+        event_name,
+        event_contract_id,
+        event_client_name,
+        event_client_contact,
+        event_date_start,
+        event_date_end,
+        None,
+        event_location,
+        event_attendees,
+        event_notes,
+    )
 
-    #created = contract_manager.CreateContract(contract_item=myContract)
+    # myContract = ContractDB(None, contract_client_id, contract_commercial_id, contract_total_amount, contract_remaining_amount, func.now(), contract_is_signed)
+
+    # created = contract_manager.CreateContract(contract_item=myContract)
     created = event_manager.CreateEvent(event_item=myEvent)
     print("Created: " + str(created))

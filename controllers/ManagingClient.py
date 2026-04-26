@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import jwt
 import os
 
+
 class ManagingClient:
     ###Functions to manage contracts
 
@@ -15,22 +16,23 @@ class ManagingClient:
         self.db = Database()
 
     def ListContracts(self):
-        engine = self.db.LoginDatabase() 
-        
+        engine = self.db.LoginDatabase()
+
         loggedUser = self.LoginUser()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        
+
         with Session(engine) as session:
             stmt = select(ClientDB)
             for client in session.scalars(stmt):
                 print(str(client.full_name) + " / " + str(client.email))
 
     """Functions to create user with a password"""
+
     def CreateClient(self, client_item: ClientDB):
-        engine = self.db.LoginDatabase() 
-        
+        engine = self.db.LoginDatabase()
+
         with Session(engine) as session:
             session.add(client_item)
             session.commit()

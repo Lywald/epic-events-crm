@@ -18,17 +18,18 @@ class ManagingUser:
         self.db = Database()
 
     """Functions to create user with a password"""
+
     def CreateUser(self, user_item: UserDB):
         engine = self.db.LoginDatabase()
         if engine is None:
             print("Connection échouée.")
             return None
-        
+
         loggedUser = self.LoginUser()
-        if loggedUser is None or loggedUser.role.lower()!="gestion":
+        if loggedUser is None or loggedUser.role.lower() != "gestion":
             print("Authentification échouée.")
             return None
-        
+
         with Session(engine) as session:
             session.add(user_item)
             session.commit()
@@ -45,12 +46,12 @@ class ManagingUser:
         if engine is None:
             print("Connection échouée.")
             return None
-        
+
         loggedUser = self.LoginUser()
-        if loggedUser is None or loggedUser.role.lower()!="gestion":
+        if loggedUser is None or loggedUser.role.lower() != "gestion":
             print("Authentification échouée.")
             return None
-        
+
         with Session(engine) as session:
             usr = session.get(UserDB, user_id)
             session.delete(usr)
@@ -61,33 +62,35 @@ class ManagingUser:
     def LoginUser(self, email=None, password_hash=None):
         """Login if the password_hash is the same than in db"""
         engine = self.db.LoginDatabase()
-        if engine is None: 
+        if engine is None:
             return None
-        
-        if email=="" or password_hash == "" or email==None or password_hash==None:
+
+        if email == "" or password_hash == "" or email == None or password_hash == None:
             print("Login email: ")
             email = input()
             print("Login password: ")
             user_password = input()
-            #salt = bcrypt.gensalt()
-            #hashed_password = bcrypt.hashpw(user_password.encode('utf-8'), salt).decode('utf-8')
-            #password_hash = hashed_password
+            # salt = bcrypt.gensalt()
+            # hashed_password = bcrypt.hashpw(user_password.encode('utf-8'), salt).decode('utf-8')
+            # password_hash = hashed_password
 
         with Session(engine) as session:
             stmt = select(UserDB).where(UserDB.email == email)
-            user = session.scalar(stmt)            
-            #session.commit()
-            #key = "secret"
+            user = session.scalar(stmt)
+            # session.commit()
+            # key = "secret"
             if not user:
                 return None
-                        
-            if bcrypt.checkpw(user_password.encode('utf-8'), user.password.encode('utf-8')):
+
+            if bcrypt.checkpw(
+                user_password.encode("utf-8"), user.password.encode("utf-8")
+            ):
                 print("Correct password")
                 self.db.currentUser = user
                 return user
                 # JWT_SECRET = os.getenv("JWT_SECRET")
                 # if not JWT_SECRET:
-                #     raise ValueError("JWT_SEGMENT missing from .env")    
+                #     raise ValueError("JWT_SEGMENT missing from .env")
                 # payload = {
                 #     "user_id": user.id,
                 #     "email": user.email,

@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import jwt
 import os
 
+
 class ManagingContract:
     """Controller for contract CRUD operations."""
 
@@ -16,21 +17,22 @@ class ManagingContract:
 
     def ListContracts(self):
         engine = self.db.LoginDatabase()
-        
+
         loggedUser = self.LoginUser()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        
+
         with Session(engine) as session:
             stmt = select(ContractDB)
             for contract in session.scalars(stmt):
                 print(str(contract.total_amount) + " / " + str(contract.id))
 
     """Functions to create user with a password"""
+
     def CreateContract(self, contract_item: ContractDB):
         user_manager = ManagingUser()
-        user_manager.LoginUser() # Trigger input() form
+        user_manager.LoginUser()  # Trigger input() form
 
         engine = self.db.LoginDatabase()
         with Session(engine) as session:

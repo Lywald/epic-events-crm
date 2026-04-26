@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from models.user import UserDB
 import bcrypt
 
+
 class Database:
     currentUser: UserDB
 
@@ -11,14 +12,14 @@ class Database:
         self.engine = None
         self.loggedin = False
         return
-    
-    def LoginDatabase(self): #, email: str, password: str):
+
+    def LoginDatabase(self):  # , email: str, password: str):
         self.loggedin = True
         if self.engine is None:
             self.engine = create_engine("sqlite:///epiceventsDB.db", echo=False)
 
         return self.engine
-    
+
     def RequestDatabase(request: str):
         """Protéger les requètes contre injection SQL"""
         return

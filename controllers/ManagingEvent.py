@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import jwt
 import os
 
+
 class ManagingEvent:
     ###Functions to manage events
 
@@ -17,22 +18,23 @@ class ManagingEvent:
 
     def ListEvents(self):
         engine = self.db.LoginDatabase()
-        
+
         loggedUser = self.LoginUser()
         if loggedUser is None:
             print("Authentification échouée.")
             return
-        
+
         with Session(engine) as session:
             stmt = select(EventDB)
             for event in session.scalars(stmt):
                 print(str(event.name) + " / " + str(event.id))
 
     """Functions to create event"""
+
     def CreateEvent(self, event_item: EventDB):
         user_manager = ManagingUser()
-        user_manager.LoginUser() # Trigger input() form
-        
+        user_manager.LoginUser()  # Trigger input() form
+
         engine = self.db.LoginDatabase()
         with Session(engine) as session:
             session.add(event_item)
