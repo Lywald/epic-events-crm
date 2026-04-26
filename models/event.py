@@ -9,6 +9,7 @@ from .base import Base
 class EventDB(Base):
     """Evenements organisés par Epic Events"""
     __tablename__ = "events"    
+    
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     contract_id = Column(Integer, ForeignKey("contracts.id"), nullable=False)

@@ -15,12 +15,11 @@ class ManagingContract:
         self.db = Database()
 
     def ListContracts(self):
-        #admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        engine = self.db.LoginDatabase() #email="admin@epicevents.com", password=admin_password)
+        engine = self.db.LoginDatabase()
         
         loggedUser = self.LoginUser()
         if loggedUser is None:
-            print("Authentification requise.")
+            print("Authentification échouée.")
             return
         
         with Session(engine) as session:
@@ -30,12 +29,10 @@ class ManagingContract:
 
     """Functions to create user with a password"""
     def CreateContract(self, contract_item: ContractDB):
-        # Use admin password from .env for DB operations (dummy for SQLite)
         user_manager = ManagingUser()
         user_manager.LoginUser() # Trigger input() form
 
-        #admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        engine = self.db.LoginDatabase() #email="admin@epicevents.com", password=admin_password)
+        engine = self.db.LoginDatabase()
         with Session(engine) as session:
             session.add(contract_item)
             session.commit()

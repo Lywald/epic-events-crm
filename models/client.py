@@ -7,6 +7,7 @@ from .base import Base
 
 class ClientDB(Base):
     __tablename__ = "clients"
+    
     id = Column(Integer, primary_key=True, autoincrement=True)
     full_name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)

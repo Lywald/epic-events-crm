@@ -19,15 +19,14 @@ class ManagingUser:
 
     """Functions to create user with a password"""
     def CreateUser(self, user_item: UserDB):
-        # Use admin password from .env for DB operations (dummy for SQLite)
-        # admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        loggedUser = self.LoginUser()
-        if loggedUser is None or loggedUser.role.lower()!="gestion":
-            print("Authentification échouée.")
-            return None
         engine = self.db.LoginDatabase()
         if engine is None:
             print("Connection échouée.")
+            return None
+        
+        loggedUser = self.LoginUser()
+        if loggedUser is None or loggedUser.role.lower()!="gestion":
+            print("Authentification échouée.")
             return None
         
         with Session(engine) as session:
@@ -42,15 +41,14 @@ class ManagingUser:
         return False
 
     def DeleteUser(self, user_id: int):
-        # Use admin password from .env for DB operations (dummy for SQLite)
-        # admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
-        loggedUser = self.LoginUser()
-        if loggedUser is None or loggedUser.role.lower()!="gestion":
-            print("Authentification échouée.")
-            return None
         engine = self.db.LoginDatabase()
         if engine is None:
             print("Connection échouée.")
+            return None
+        
+        loggedUser = self.LoginUser()
+        if loggedUser is None or loggedUser.role.lower()!="gestion":
+            print("Authentification échouée.")
             return None
         
         with Session(engine) as session:
@@ -62,7 +60,6 @@ class ManagingUser:
 
     def LoginUser(self, email=None, password_hash=None):
         """Login if the password_hash is the same than in db"""
-        # admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
         engine = self.db.LoginDatabase()
         if engine is None: 
             return None
@@ -107,11 +104,11 @@ class ManagingUser:
         return None
 
     def ListUsers(self):
-        # admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
         engine = self.db.LoginDatabase()
+
         loggedUser = self.LoginUser()
         if loggedUser is None:
-            print("Authentification requise.")
+            print("Authentification échouée.")
             return
 
         with Session(engine) as session:
