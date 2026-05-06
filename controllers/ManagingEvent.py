@@ -39,6 +39,10 @@ class ManagingEvent:
             print("Authentification échouée.")
             return
 
+        if loggedUser.role.lower() != "commercial":
+            print("Seul un membre commercial peut créer un évènement.")
+            return None
+
         engine = self.db.LoginDatabase()
         with Session(engine) as session:
             session.add(event_item)
@@ -96,8 +100,15 @@ class ManagingEvent:
             print("Authentification échouée.")
             return
 
+        if loggedUser.role.lower() != "commercial":
+            print("Seul un membre commercial peut supprimer un évènement.")
+            return None
+
         with Session(engine) as session:
             evt = session.get(EventDB, event_id)
+            if evt is None:
+                print("Evènement introuvable.")
+                return None
             session.delete(evt)
             session.commit()
             return True

@@ -78,8 +78,18 @@ class ManagingUser:
             print("Authentification échouée.")
             return
 
+        if loggedUser.role.lower() != "gestion":
+            print("Authentification échouée: seul Gestion peut supprimer un utilisateur.")
+            return None
+    
         with Session(engine) as session:
             usr = session.get(UserDB, user_id)
+            if usr is None:
+                print("Utilisateur introuvable.")
+                return None
+            if usr.id == loggedUser.id:
+                print("Vous ne pouvez pas supprimer votre propre compte.")
+                return None
             session.delete(usr)
             session.commit()
             return True

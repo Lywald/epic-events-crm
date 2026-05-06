@@ -66,6 +66,10 @@ class ManagingContract:
             print("Authentification échouée.")
             return
 
+        if loggedUser.role.lower() != "gestion":
+            print("Seul le département gestion peut créer un contrat.")
+            return None
+
         engine = self.db.LoginDatabase()
         with Session(engine) as session:
             session.add(contract_item)
@@ -73,40 +77,42 @@ class ManagingContract:
             return True
         return False
 
-        def UpdateContract(self, contract_item: ContractDB):
-            engine = self.db.LoginDatabase()
-            if engine is None:
-                print("Connection échouée.")
+    def UpdateContract(self, contract_item: ContractDB):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+    
+        loggedUser = self.user_manager.LoginCheck()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return None
+    
+        if loggedUser.role.lower() != "commercial":
+            print("Seul le département commercial peut modifier un contrat.")
+            return None
+    
+        if contract_item.id is None:
+            print("ID contrat manquant.")
+            return None
+    
+        with Session(engine) as session:
+            ctr = session.get(ContractDB, int(contract_item.id))
+            if ctr is None:
+                print("Contrat introuvable.")
                 return None
-        
-            loggedUser = self.user_manager.LoginCheck()
-            if loggedUser is None:
-                print("Authentification échouée.")
+            if ctr.commercial_id != loggedUser.id:
+                print("Seul le commercial originel peut modifier un contrat")
                 return None
-        
-            if loggedUser.role.lower() != "gestion":
-                print("Seul le département gestion peut modifier un contrat.")
-                return None
-        
-            if contract_item.id is None:
-                print("ID contrat manquant.")
-                return None
-        
-            with Session(engine) as session:
-                ctr = session.get(ContractDB, int(contract_item.id))
-                if ctr is None:
-                    print("Contrat introuvable.")
-                    return None
-        
-                ctr.client_id = int(contract_item.client_id)
-                ctr.commercial_id = int(contract_item.commercial_id)
-                ctr.total_amount = float(contract_item.total_amount)
-                ctr.remaining_amount = float(contract_item.remaining_amount)
-                ctr.is_signed = bool(contract_item.is_signed)
-        
-                session.commit()
-                return True
-            return False
+            ctr.client_id = int(contract_item.client_id)
+            ctr.commercial_id = int(contract_item.commercial_id)
+            ctr.total_amount = float(contract_item.total_amount)
+            ctr.remaining_amount = float(contract_item.remaining_amount)
+            ctr.is_signed = bool(contract_item.is_signed)
+    
+            session.commit()
+            return True
+        return False
 
     def DeleteContract(self, contract_id: int):
         engine = self.db.LoginDatabase()
@@ -118,9 +124,16 @@ class ManagingContract:
         if loggedUser is None:
             print("Authentification échouée.")
             return
+        
+        if loggedUser.role.lower() != "gestion":
+            print("Seul le département gestion peut supprimer un contrat.")
+            return None
 
         with Session(engine) as session:
             ctr = session.get(ContractDB, contract_id)
+            if ctr is None:
+                print("Contrat introuvable.")
+                return None
             session.delete(ctr)
             session.commit()
             return True
