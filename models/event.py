@@ -51,6 +51,7 @@ class EventDB(Base):
         self.contract_id = contract_id
         self.client_name = client_name
         self.client_contact = client_contact
+        self.support_contact_id = support_contact
         if isinstance(event_date_start, str):
             self.event_date_start = datetime.strptime(
                 event_date_start, "%Y-%m-%d"

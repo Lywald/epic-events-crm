@@ -41,6 +41,32 @@ class ManagingUser:
             return True
         return False
 
+    def UpdateUser(self, user_item: UserDB):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+
+        loggedUser = self.LoginCheck()  # self.LogFromJWT()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+
+        if loggedUser.role.lower() != "gestion":
+            print("Authentification échouée: seul Gestion peut modifier un utilisateur.")
+            return None
+
+        with Session(engine) as session:
+            usr = session.get(UserDB, user_item.id)
+            usr.email = user_item.email
+            usr.name = user_item.name
+            usr.role = user_item.role
+            if user_item.password:
+                usr.password = user_item.password
+            session.commit()
+            return True
+        return False
+    
     def DeleteUser(self, user_id: int):
         engine = self.db.LoginDatabase()
         if engine is None:
@@ -173,3 +199,4 @@ class ManagingUser:
             print("Déconnecté.")
         else:
             print("Pas d'utilisateur connecté")
+

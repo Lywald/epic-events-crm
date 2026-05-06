@@ -39,6 +39,32 @@ def create_user():
     print("Created: " + str(created))
 
 
+@app.command("update")
+def update_user():
+    # python main.py users create
+    print("### Creating user")
+
+    print("# User ID: ")
+    user_id = input()
+    print("# User name: ")
+    user_name = input()
+    print("# User email: ")
+    user_email = input()
+    print("# Role  (Gestion/Commercial/Support): ")
+    user_role = input()
+    while (
+        user_role != "Gestion" and user_role != "Commercial" and user_role != "Support"
+    ):
+        user_role = input()
+
+    myUser = UserDB(
+        id=user_id, name=user_name, email=user_email, role=user_role 
+    )
+
+    updated = user_manager.UpdateUser(user_item=myUser)
+    print("Updated: " + str(updated))
+
+
 @app.command("createadmin")
 def create_admin():
     # python main.py users createadmin
@@ -69,6 +95,7 @@ def list_users():
 def login_user():
     print("# LOGIN EpicEvents #")
     user_manager.LoginUser()
+
 
 @app.command("logout")
 def login_user():

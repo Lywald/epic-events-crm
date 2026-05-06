@@ -68,6 +68,49 @@ def create_event():
     print("Created: " + str(created))
 
 
+@app.command("update")
+def update_event():
+    print("### Mise à jour de l'évènement")
+
+    print("# Event ID: ")
+    event_id = input()
+    print("# Nom de l'évènement : ")
+    event_name = input()
+    print("# Lieu de l'évènement : ")
+    event_location = input()
+    print("# Nombre de participants: ")
+    event_attendees = input()
+    print("#ID Contrat : ")
+    event_contract_id = input()
+    print("# Nom du client : ")
+    event_client_name = input()
+    print("# Contact du client : ")
+    event_client_contact = input()
+    print("# Notes diverses :")
+    event_notes = input()
+    print("# Date début (AAAA-MM-JJ) :")
+    event_date_start = input()
+    print("# Date fin (AAAA-MM-JJ) :")
+    event_date_end = input()
+
+    myEvent = EventDB(
+        event_id,
+        event_name,
+        event_contract_id,
+        event_client_name,
+        event_client_contact,
+        event_date_start,
+        event_date_end,
+        None,
+        event_location,
+        event_attendees,
+        event_notes,
+    )
+
+    updated = event_manager.UpdateEvent(event_item=myEvent)
+    print("Updated: " + str(updated))
+
+
 @app.command("delete")
 def delete_event():
     print("### Suppression d'évènement")

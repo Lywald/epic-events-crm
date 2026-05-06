@@ -51,6 +51,47 @@ class ManagingClient:
             return True
         return False
 
+        def UpdateClient(self, client_item: ClientDB):
+            engine = self.db.LoginDatabase()
+            if engine is None:
+                print("Connection échouée.")
+                return None
+        
+            loggedUser = self.user_manager.LoginCheck()
+            if loggedUser is None:
+                print("Authentification échouée.")
+                return None
+        
+            if loggedUser.role.lower() != "commercial":
+                print("Seul un commercial peut modifier un client.")
+                return None
+        
+            if getattr(client_item, "id", None) is None:
+                print("ID client manquant.")
+                return None
+        
+            with Session(engine) as session:
+                clt = session.get(ClientDB, int(client_item.id))
+                if clt is None:
+                    print("Client introuvable.")
+                    return None
+        
+                # Optional ownership check:
+                if clt.commercial_id != loggedUser.id:
+                    print("Vous ne pouvez modifier que vos propres clients.")
+                    return None
+        
+                clt.full_name = client_item.full_name
+                clt.email = client_item.email
+                clt.phone = client_item.phone
+                clt.company_name = client_item.company_name
+                clt.updated_at = func.now()
+                clt.commercial_id = loggedUser.id
+        
+                session.commit()
+                return True
+            return False
+
     def DeleteClient(self, client_id: int):
         engine = self.db.LoginDatabase()
         if engine is None:
@@ -60,7 +101,7 @@ class ManagingClient:
         loggedUser = self.user_manager.LoginCheck()  # self.LogFromJWT()
         if loggedUser is None:
             print("Authentification échouée.")
-            return
+            return None
 
         with Session(engine) as session:
             clt = session.get(ClientDB, client_id)

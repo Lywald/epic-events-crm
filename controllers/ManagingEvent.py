@@ -46,6 +46,45 @@ class ManagingEvent:
             return True
         return False
 
+    def UpdateEvent(self, event_item: EventDB):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+
+        loggedUser = self.user_manager.LoginCheck()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return None
+
+        if loggedUser.role.lower() != "gestion":
+            print("Seul un membre de gestion peut modifier un évènement.")
+            return None
+
+        if event_item.id is None:
+            print("ID évènement manquant.")
+            return None
+
+        with Session(engine) as session:
+            evt = session.get(EventDB, int(event_item.id))
+            if evt is None:
+                print("Evènement introuvable.")
+                return None
+
+            evt.name = event_item.name
+            evt.contract_id = int(event_item.contract_id)
+            evt.client_name = event_item.client_name
+            evt.client_contact = event_item.client_contact
+            evt.event_date_start = event_item.event_date_start
+            evt.event_date_end = event_item.event_date_end
+            evt.location = event_item.location
+            evt.attendees = int(event_item.attendees) if event_item.attendees else None
+            evt.notes = event_item.notes
+
+            session.commit()
+            return True
+        return False
+
     def DeleteEvent(self, event_id: int):
         engine = self.db.LoginDatabase()
         if engine is None:

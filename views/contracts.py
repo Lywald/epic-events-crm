@@ -59,6 +59,49 @@ def create_contract():
     print("Created: " + str(created))
 
 
+@app.command("update")
+def update_contract():
+    # python main.py contracts update
+    print("### Updating contract")
+
+    loggedUser = user_manager.LoginCheck()
+    if loggedUser is None:
+        print("Authentification échouée.")
+        return None
+    if loggedUser.role.lower() != "gestion":
+        print("Seul le département gestion peut modifier un contrat.")
+        return None
+
+    print("# Contract ID: ")
+    contract_id = input()
+    print("# Client id: ")
+    contract_client_id = input()
+    print("# Commercial id: ")
+    contract_commercial_id = input()
+    print("# Total amount: ")
+    contract_total_amount = input()
+    print("# Remaining amount: ")
+    contract_remaining_amount = input()
+    print("# Is contract signed? (yes/no): ")
+    contract_is_signed = input()
+    while contract_is_signed != "yes" and contract_is_signed != "no":
+        contract_is_signed = input()
+    contract_is_signed = contract_is_signed == "yes"
+
+    myContract = ContractDB(
+        contract_id,
+        contract_client_id,
+        contract_commercial_id,
+        contract_total_amount,
+        contract_remaining_amount,
+        func.now(),
+        contract_is_signed,
+    )
+
+    updated = contract_manager.UpdateContract(contract_item=myContract)
+    print("Updated: " + str(updated))
+
+
 @app.command("delete")
 def delete_contract():
     print("### Deleting contract")

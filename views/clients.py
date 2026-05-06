@@ -60,6 +60,46 @@ def create_client():
     return True
 
 
+@app.command("update")
+def update_client():
+    # python main.py clients update
+    print("### Updating client")
+
+    loggedUser = user_manager.LoginCheck()
+    if loggedUser is None:
+        print("Erreur a l'authentification.")
+        return None
+
+    if loggedUser.role.lower() != "commercial":
+        print("Seuls les commerciaux peuvent modifier des clients.")
+        return None
+
+    print("# Client ID: ")
+    client_id = input()
+    print("# Client full name: ")
+    client_full_name = input()
+    print("# Client email: ")
+    client_email = input()
+    print("# Client phone: ")
+    client_phone = input()
+    print("# Client Company Name: ")
+    client_company_name = input()
+
+    myClient = ClientDB(
+        client_full_name,
+        client_email,
+        client_phone,
+        client_company_name,
+        func.now(),   # not used in update, but required by current constructor
+        func.now(),
+        loggedUser.id,
+    )
+    myClient.id = int(client_id)
+
+    updated = client_manager.UpdateClient(client_item=myClient)
+    print("Updated: " + str(updated))
+
+
 @app.command("delete")
 def delete_client():
     print("### Deleting client")
