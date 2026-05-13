@@ -110,3 +110,15 @@ def delete_client():
         print(tmp_id)
         client_id = tmp_id
     client_manager.DeleteClient(client_id=client_id)
+
+
+@app.command("detail")
+def detail_client():
+    print("### Detailing client")
+    print("# Client ID: ")
+    client_id = None
+    while client_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        client_id = tmp_id
+    client_manager.DetailClient(client_id=client_id)

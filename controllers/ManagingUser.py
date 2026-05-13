@@ -210,3 +210,27 @@ class ManagingUser:
         else:
             print("Pas d'utilisateur connecté")
 
+
+    def DetailUser(self, user_id: int):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+
+        loggedUser = self.LoginCheck()  # self.LogFromJWT()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+
+        if loggedUser.role.lower() != "gestion":
+            print("Authentification échouée: seul Gestion peut detailler un utilisateur.")
+            return None
+    
+        with Session(engine) as session:
+            usr = session.get(UserDB, user_id)
+            if usr is None:
+                print("Utilisateur introuvable.")
+                return None
+            print(f"User details: {vars(usr)}")            
+            return True
+        return False

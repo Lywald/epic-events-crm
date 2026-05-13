@@ -88,6 +88,7 @@ def delete_user():
 @app.command("list")
 def list_users():
     print("### Listing users")
+    # SENTRY TEST: divvvv = 1/0
     user_manager.ListUsers()
 
 
@@ -101,3 +102,15 @@ def login_user():
 def login_user():
     print("# Disconnecting...")
     user_manager.Unlog()
+
+
+@app.command("detail")
+def detail_user():
+    print("### Detailing user")
+    print("# User ID: ")
+    user_id = None
+    while user_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        user_id = tmp_id
+    user_manager.DetailUser(user_id=user_id)

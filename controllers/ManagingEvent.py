@@ -148,3 +148,24 @@ class ManagingEvent:
 
 
 #    def CreateEvent
+    def DetailEvent(self, event_id: int):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+
+        loggedUser = self.user_manager.LoginCheck()  # self.LogFromJWT()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+        
+        with Session(engine) as session:
+            evt = session.get(EventDB, event_id)
+            if evt is None:
+                print("Contrat introuvable.")
+                return None
+            print(f"Event details: {vars(evt)}")            
+            # session.delete(ctr)
+            # session.commit()
+            return True
+        return False

@@ -138,3 +138,25 @@ class ManagingContract:
             session.commit()
             return True
         return False
+
+    def DetailContract(self, contract_id: int):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+
+        loggedUser = self.user_manager.LoginCheck()  # self.LogFromJWT()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return
+        
+        with Session(engine) as session:
+            ctr = session.get(ContractDB, contract_id)
+            if ctr is None:
+                print("Contrat introuvable.")
+                return None
+            print(f"Contract details: {vars(ctr)}")            
+            # session.delete(ctr)
+            # session.commit()
+            return True
+        return False

@@ -142,3 +142,15 @@ def addsupport_event():
         user_id = tmp_id
 
     event_manager.AddSupport(user_id=user_id, event_id=event_id)
+
+
+@app.command("detail")
+def detail_event():
+    print("### Detail d'évènement")
+    print("# Event ID: ")
+    event_id = None
+    while event_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        event_id = tmp_id
+    event_manager.DetailEvent(event_id=event_id)

@@ -116,3 +116,20 @@ class ManagingClient:
             session.commit()
             return True
         return False
+
+    def DetailClient(self, client_id: int):
+        engine = self.db.LoginDatabase()
+        if engine is None:
+            print("Connection échouée.")
+            return None
+
+        loggedUser = self.user_manager.LoginCheck()  # self.LogFromJWT()
+        if loggedUser is None:
+            print("Authentification échouée.")
+            return None
+
+        with Session(engine) as session:
+            clt = session.get(ClientDB, client_id)
+            print(f"Client details: {vars(clt)}")            
+            return True
+        return False

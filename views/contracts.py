@@ -112,3 +112,14 @@ def delete_contract():
         print(tmp_id)
         contract_id = tmp_id
     contract_manager.DeleteContract(contract_id=contract_id)
+
+@app.command("detail")
+def detail_contract():
+    print("### Detailing contract")
+    print("# Contract ID: ")
+    contract_id = None
+    while contract_id is None:
+        tmp_id = int(input())
+        print(tmp_id)
+        contract_id = tmp_id
+    contract_manager.DetailContract(contract_id=contract_id)
